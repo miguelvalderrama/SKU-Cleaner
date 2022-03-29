@@ -207,5 +207,3 @@ def Unmerge_Drogs():
     #Read the file
     df = pd.read_csv('final.csv')
 
-    #Distri
-
