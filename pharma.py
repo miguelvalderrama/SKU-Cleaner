@@ -1,139 +1,31 @@
 import pandas as pd
-import datetime
+from drogs import *
 
+#DROGS = ['dismeven', 'drolanca', 'italclinic', 'cobeca']
 
-DROGS = ['Drolanca', 'Dismeven', 'Vitalclinic']
-
-
-def dismeven(days):
-    try:
-        df = pd.read_csv('Dismeven.csv', usecols=['Unnamed: 1','Unnamed: 2', 'Unnamed: 3', 'Unnamed: 9'])
-        df = df.iloc[9:]
-        names = {
-            'Unnamed: 1': 'Qty',
-            'Unnamed: 2': 'Product',
-            'Unnamed: 3': 'F.Price',
-            'Unnamed: 9': 'Cod. Bar'
-            }
-        df.rename(columns=names, inplace=True)
-        mf = df['Product'].dropna()
-        df = df.iloc[:len(mf)]
-        
-        #Fix the cod. bar
-        df['Cod. Bar'] = df['Cod. Bar'].replace('NO APLICA', 0)
-        df['Cod. Bar'] = df['Cod. Bar'].fillna(0)
-
-        #Fix F.price
-        df['F.Price'] = df['F.Price'].astype(float)
-
-        #Get today's date and sum the days of credit
-        today = datetime.datetime.today() + datetime.timedelta(days=days)
-        df['Date'] = today.strftime('%d/%m/%Y')
-
-        #Add the drog name
-        df['Drog'] = 'Dismeven'
-
-        #Save the dataframe
-        df.to_csv('modified.csv', index=False)
-    except:
-        return False
-    return True
-
-def drolanca(days):
-    try:
-        df = pd.read_excel('Drolanca.xlsx' , usecols=['Unnamed: 1', 'Unnamed: 2', 'Unnamed: 6', 'Unnamed: 10', 'Unnamed: 11'])
-        df = df.iloc[6:]
-        names = {
-            'Unnamed: 1': 'Cod. Bar',
-            'Unnamed: 2': 'Product',
-            'Unnamed: 6': 'Bs',
-            'Unnamed: 10': 'F.Price',
-            'Unnamed: 11': 'Qty',
-            }
-        df.rename(columns=names, inplace=True)
-
-        #Check promo price
-        df['F.Price'] = df['F.Price'].fillna(df['Bs'])
-
-        #Fix the cod. bar
-        df['Cod. Bar'] = df['Cod. Bar'].fillna(0)
-
-        #Drop the Bs column
-        df.drop(['Bs'], axis=1, inplace=True)
-
-        #Get today's date and sum the days of credit
-        today = datetime.datetime.today() + datetime.timedelta(days=days)
-        df['Date'] = today.strftime('%d/%m/%Y')
-
-        #Add the drog name
-        df['Drog'] = 'Drolanca'
-
-        #Save the dataframe
-        df.to_csv('drolanca.csv', index=False)
-    except:
-        return False
-    return True
-
-def vitalclinic(tasa, days):
-    try:
-        df = pd.read_excel('Vitalclinic.xlsx', usecols=['Unnamed: 1', 'Unnamed: 3', 'Unnamed: 6', 'Unnamed: 9'])
-        df = df.iloc[10:]
-        names = {
-            'Unnamed: 1': 'Cod. Bar',
-            'Unnamed: 3': 'Product',
-            'Unnamed: 6': '$',
-            'Unnamed: 9': 'Qty',
-            }
-        df.rename(columns=names, inplace=True)
-        mf = df['Product'].dropna()
-        df = df.iloc[:len(mf)]
-        df['F.Price'] = df['$'] * float(tasa)
-        df.drop(['$'], axis=1, inplace=True)
-
-        #Fix the cod. bar
-        df['Cod. Bar'] = df['Cod. Bar'].replace(to_replace='[^0-9]', value='', regex=True)
-        df['Cod. Bar'] = df['Cod. Bar'].fillna(0)
-
-        #Fix F.price
-        df['F.Price'] = df['F.Price'].astype(float)
-
-        #Get today's date and sum the days of credit
-        today = datetime.datetime.today() + datetime.timedelta(days=days)
-        df['Date'] = today.strftime('%d/%m/%Y')
-
-        
-        #Add the drog name
-        df['Drog'] = 'Vitalclinic'
-
-        #Save the dataframe
-        df.to_csv('vitalclinic.csv', index=False)
-    except:
-        return False
-    return True
-
-def Merge_Drogs(method=False):
-    tasa = float(input('Ingrese la tasa de cambio: '))
-
+def Merge_Drogs(method=False, dismeven_d=False, drolanca_d=False, italclinic_d=False, cobeca_d=False):
+    #Input tasa de cambio
+    tasa = 5.1
     #Input credits days for each drog
-    #days = int(input('Ingrese los dias de credito: '))
+    #for i in range(len(DROGS)):
     
     #Call dismeven
-    if not dismeven(14):
-        print('Dismeven failed')
+    dismeven(14)
     #Call drolanca
-    if not drolanca(7):
-        print('Drolanca failed')
+    drolanca(7)
     #Call vitalclinic
-    if not vitalclinic(tasa, 21):
-        print('Vitalclinic failed')
+    vitalclinic(tasa, 21)
+    #Call cobeca
+    cobeca()
 
     #Read the files
-    df1 = pd.read_csv('drolanca.csv')
-    df2 = pd.read_csv('modified.csv')
-    df3 = pd.read_csv('vitalclinic.csv')
+    df1 = pd.read_csv('csv\drolanca.csv')
+    df2 = pd.read_csv('csv\dismeven.csv')
+    df3 = pd.read_csv('csv\italclinic.csv')
+    df4 = pd.read_csv('csv\cobeca.csv')
    
     #Concatenate the dataframes and sort by cod. bar
-    df = pd.concat([df1, df2, df3])
+    df = pd.concat([df1, df2, df3, df4])
     df = df.sort_values(by=['Cod. Bar'])
     
     #Dictionary with cod. bar as key
@@ -207,3 +99,5 @@ def Unmerge_Drogs():
     #Read the file
     df = pd.read_csv('final.csv')
 
+
+Merge_Drogs('price')
