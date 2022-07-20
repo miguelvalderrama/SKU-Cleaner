@@ -1,9 +1,10 @@
 import pandas as pd
 import datetime
 
+
 def dismeven(days):
     try:
-        df = pd.read_excel('Formatos\Dismeven.xlsx', usecols=['Unnamed: 1','Unnamed: 2', 'Unnamed: 3', 'Unnamed: 9'])
+        df = pd.read_excel('raw_data\Dismeven.xlsx', usecols=['Unnamed: 1','Unnamed: 2', 'Unnamed: 3', 'Unnamed: 9'])
         df = df.iloc[9:]
         names = {
             'Unnamed: 1': 'Qty',
@@ -28,11 +29,10 @@ def dismeven(days):
         df.to_csv('csv\dismeven.csv', index=False)
     except:
         raise Exception('Error en Dismeven')
-    return True
 
 def drolanca(days):
     try:
-        df = pd.read_excel('Formatos\Drolanca.xlsx' , usecols=['Unnamed: 1', 'Unnamed: 2', 'Unnamed: 6', 'Unnamed: 10', 'Unnamed: 11'])
+        df = pd.read_excel('raw_data\Drolanca.xlsx' , usecols=['Unnamed: 1', 'Unnamed: 2', 'Unnamed: 6', 'Unnamed: 10', 'Unnamed: 11'])
         df = df.iloc[6:]
         names = {
             'Unnamed: 1': 'Cod. Bar',
@@ -57,11 +57,10 @@ def drolanca(days):
         df.to_csv('csv\drolanca.csv', index=False)
     except:
         raise Exception('Error en Drolanca')
-    return True
 
 def vitalclinic(tasa, days):
     try:
-        df = pd.read_excel('Formatos\Vitalclinic.xlsx', usecols=['Unnamed: 1', 'Unnamed: 3', 'Unnamed: 6', 'Unnamed: 9'])
+        df = pd.read_excel('raw_data\Vitalclinic.xlsx', usecols=['Unnamed: 1', 'Unnamed: 3', 'Unnamed: 6', 'Unnamed: 9'])
         df = df.iloc[10:]
         names = {
             'Unnamed: 1': 'Cod. Bar',
@@ -88,11 +87,10 @@ def vitalclinic(tasa, days):
         df.to_csv('csv\italclinic.csv', index=False)
     except:
         raise Exception('Error en Vitalclinic')
-    return True
 
 def cobeca():
     try:
-        df = pd.read_excel('Formatos\Cobeca.xlsx', sheet_name='MEDICINAS', usecols=['Unnamed: 1', 'Unnamed: 5', 'Unnamed: 11', 'Unnamed: 12', 'Unnamed: 13'])
+        df = pd.read_excel('raw_data\Cobeca.xlsx', sheet_name='MEDICINAS', usecols=['Unnamed: 1', 'Unnamed: 5', 'Unnamed: 11', 'Unnamed: 12', 'Unnamed: 13'])
         df = df.iloc[8:]
         names = {
             'Unnamed: 1': 'Product',
@@ -114,4 +112,3 @@ def cobeca():
         df.to_csv('csv\cobeca.csv', index=False)
     except:
         raise Exception('Error en Cobeca')
-    return True
